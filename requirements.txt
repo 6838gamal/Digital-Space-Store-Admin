@@ -3,3 +3,4 @@ uvicorn
 SQLAlchemy
 jinja2
 
+python-multipart
