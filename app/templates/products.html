@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4 text-center">المنتجات الرقمية</h2>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for product in products %}
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ product.title }}</h5>
+                <p class="card-text">{{ product.description or "-" }}</p>
+                <p><strong>النوع:</strong> {{ product.product_type }}</p>
+                <p><strong>السعر:</strong> {{ product.price or "مجاني" }}</p>
+                {% if product.file_url %}
+                <a href="{{ product.file_url }}" class="btn btn-primary w-100" target="_blank">تحميل</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
