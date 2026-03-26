@@ -1,5 +1,5 @@
 fastapi
 uvicorn
 SQLAlchemy
-jinaj2
+jinja2
 
