@@ -10,10 +10,8 @@ class DigitalProductBase(BaseModel):
     class Config:
         from_attributes = True  # بديل orm_mode في Pydantic V2
 
-# للإضافة
 class DigitalProductCreate(DigitalProductBase):
     pass
 
-# للتحديث
 class DigitalProductUpdate(DigitalProductBase):
     pass

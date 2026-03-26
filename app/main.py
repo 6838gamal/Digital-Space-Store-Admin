@@ -13,7 +13,7 @@ app = FastAPI()
 templates = Jinja2Templates(directory="app/templates")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-# Dependency للـ DB
+# Dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -59,12 +59,3 @@ def add_product(
     )
     crud.create_product(db, product)
     return templates.TemplateResponse("add_product.html", {"request": request, "success": True})
-
-# ===== VIEW PRODUCTS (Users) =====
-@app.get("/products")
-def view_products(request: Request, db: Session = Depends(get_db)):
-    products = crud.get_all_products(db)
-    return templates.TemplateResponse(
-        "products.html",
-        {"request": request, "products": products}
-    )
