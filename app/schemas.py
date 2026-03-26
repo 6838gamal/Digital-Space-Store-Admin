@@ -1,21 +1,19 @@
 from pydantic import BaseModel
-from typing import Optional
 
 class DigitalProductBase(BaseModel):
     title: str
-    description: Optional[str] = None
+    description: str | None = None
     product_type: str
-    price: Optional[float] = None
-    file_url: Optional[str] = None
-    is_active: Optional[bool] = True
+    price: float | None = None
+    file_url: str | None = None
 
+    class Config:
+        from_attributes = True  # بديل orm_mode في Pydantic V2
+
+# للإضافة
 class DigitalProductCreate(DigitalProductBase):
     pass
 
+# للتحديث
 class DigitalProductUpdate(DigitalProductBase):
     pass
-
-class DigitalProduct(DigitalProductBase):
-    id: int
-    class Config:
-        from_attributes = True
