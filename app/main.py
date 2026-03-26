@@ -3,6 +3,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
+
 from app import models, crud, schemas
 from app.database import engine, SessionLocal, Base
 
@@ -10,10 +11,11 @@ from app.database import engine, SessionLocal, Base
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
 templates = Jinja2Templates(directory="app/templates")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-# Dependency
+# الاتصال بقاعدة البيانات
 def get_db():
     db = SessionLocal()
     try:
@@ -21,21 +23,31 @@ def get_db():
     finally:
         db.close()
 
-# ===== ROOT =====
+# ===== الصفحة الرئيسية =====
 @app.get("/")
-def root():
-    return RedirectResponse(url="/dashboard")
+def home(request: Request, db: Session = Depends(get_db)):
+    products = crud.get_all_products(db)
+    return templates.TemplateResponse(
+        "dashboard.html",
+        {
+            "request": request,
+            "products": products
+        }
+    )
 
-# ===== DASHBOARD =====
+# ===== Dashboard =====
 @app.get("/dashboard")
 def dashboard(request: Request, db: Session = Depends(get_db)):
     products = crud.get_all_products(db)
     return templates.TemplateResponse(
         "dashboard.html",
-        {"request": request, "products": products}
+        {
+            "request": request,
+            "products": products
+        }
     )
 
-# ===== ADD PRODUCT =====
+# ===== إضافة منتج =====
 @app.get("/products/add")
 def add_product_form(request: Request):
     return templates.TemplateResponse("add_product.html", {"request": request})
@@ -57,5 +69,7 @@ def add_product(
         price=price,
         file_url=file_url
     )
+
     crud.create_product(db, product)
-    return templates.TemplateResponse("add_product.html", {"request": request, "success": True})
+
+    return RedirectResponse(url="/dashboard", status_code=303)

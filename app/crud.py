@@ -1,19 +1,20 @@
 from sqlalchemy.orm import Session
-from app import models, schemas
+from app import models
 
+# جلب كل المنتجات (كـ SQLAlchemy Objects)
 def get_all_products(db: Session):
-    products = db.query(models.DigitalProduct).all()
-    return [schemas.DigitalProductBase.from_orm(p) for p in products]
+    return db.query(models.DigitalProduct).all()
 
-def create_product(db: Session, product: schemas.DigitalProductCreate):
-    db_product = models.DigitalProduct(
-        title=product.title,
-        description=product.description,
-        product_type=product.product_type,
-        price=product.price,
-        file_url=product.file_url
+# إضافة منتج
+def create_product(db: Session, product_data):
+    product = models.DigitalProduct(
+        title=product_data.title,
+        description=product_data.description,
+        product_type=product_data.product_type,
+        price=product_data.price,
+        file_url=product_data.file_url
     )
-    db.add(db_product)
+    db.add(product)
     db.commit()
-    db.refresh(db_product)
-    return db_product
+    db.refresh(product)
+    return product
